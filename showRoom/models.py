@@ -13,7 +13,7 @@ class Car(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=10)
     title = models.CharField(max_length=100)
     color = models.CharField(max_length=100)
-    available = models.BooleanField(default=True)  # This field should exist
+    available = models.BooleanField(default=True)
     car_modal = models.CharField(max_length=100)
     category = models.ForeignKey(Category, on_delete=models.DO_NOTHING, blank=True, null=True)
 

@@ -3,11 +3,18 @@ from .models import Sales, Customer, Car, Category
 
 
 # Sales Serializer
-class SalesSerializer(serializers.ModelSerializer):
+# class SalesSerializer(serializers.ModelSerializer):
+#
+#     class Meta:
+#         model = Sales
+#         fields = ['customer', 'car_title', 'payment_method', 'total_price']
+# Sales Serializer
 
+class SalesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Sales
-        fields = ['customer', 'car_title', 'payment_method', 'total_price']
+        fields = ['customer', 'car', 'payment_method', 'total_price']
+
 
 # Customer Serializer
 class CustomerSerializer(serializers.ModelSerializer):

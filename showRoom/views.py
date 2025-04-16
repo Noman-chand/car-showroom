@@ -2,7 +2,7 @@ from django.db.migrations import serializer
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Car, Customer
+from .models import Car, Customer , Sales
 from .serializers import CarSerializer, CustomerSerializer, SalesSerializer
 
 class CreateCarView(APIView):
@@ -53,42 +53,28 @@ class CustomerListView(APIView):
 
 
 
-# class CutomerDelete
+
 class PurchaseCarView(APIView):
     def post(self, request, format=None):
-        car_id = request.data.get('car')
-        customer_id = request.data.get('customer')
+        car_id = request.data.get('car_id')
+        customer_id = request.data.get('customer_id')
         payment_method = request.data.get('payment_method')
 
-        try:
-            car = Car.objects.get(id=car_id)
-        except Car.DoesNotExist:
-            return Response({"error": "Car not found"}, status=status.HTTP_404_NOT_FOUND)
+        car = Car.objects.get(id=car_id)
+        customer = Customer.objects.get(id=customer_id)
 
-        try:
-            customer = Customer.objects.get(id=customer_id)
-        except Customer.DoesNotExist:
-            return Response({"error": "Customer not found"}, status=status.HTTP_404_NOT_FOUND)
+        car.available = False
+        car.save()
 
-        if not car.available:
-            return Response({"error": "Car is not available"}, status=status.HTTP_400_BAD_REQUEST)
+        sale = Sales.objects.create(
+            customer=customer,
+            car=car,
+            payment_method=payment_method,
+            total_price=car.price
+        )
 
-        # Prepare sales data
-        sales_data = {
-            'customer': customer.id,
-            'car': car.id,  # use the updated field name
-            'payment_method': payment_method,
-            'total_price': car.price  # handled on server
-        }
+        serializer = SalesSerializer(sale)
 
-        serializer = SalesSerializer(data=sales_data)
-        if serializer.is_valid():
-            serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
-            # Update car availability
-            car.available = False
-            car.save()
 
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
