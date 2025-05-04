@@ -52,8 +52,6 @@ class CustomerListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-
-
 class PurchaseCarView(APIView):
     def post(self, request, format=None):
         car_id = request.data.get('car_id')
