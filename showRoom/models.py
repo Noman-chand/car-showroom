@@ -1,4 +1,13 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+
+# Custom User Model
+class CustomUser(AbstractUser):  # Extend the default User model
+    is_admin = models.BooleanField(default=False)  # To identify admin users
+    is_customer = models.BooleanField(default=True)  # To identify customer users
+
+    def __str__(self):
+        return self.username
 
 # Category Model
 class Category(models.Model):
@@ -20,11 +29,11 @@ class Car(models.Model):
     def __str__(self):
         return f"{self.title} - {self.car_modal} ({self.color})"
 
-    # Customer Model
+# Customer Model (Linked to CustomUser)
 class Customer(models.Model):
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, related_name="customer_profile")
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
-    email = models.EmailField(unique=True)
     phone_number = models.CharField(max_length=15)
     address = models.CharField(max_length=255, blank=True, null=True)
 
