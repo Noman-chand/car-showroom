@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+from dotenv import load_dotenv
+load_dotenv()  # Add at top
 
 from tutorial.settings import ROOT_URLCONF
 
@@ -32,6 +35,9 @@ CORS_ALLOWED_ORIGINS = [
 ]
 
 
+# Add this line explicitly
+
+GLAM_API_KEY = os.getenv('GLAM_API_KEY')
 # Application definition
 
 INSTALLED_APPS = [
@@ -47,6 +53,7 @@ INSTALLED_APPS = [
     'showRoom',
     'corsheaders',
     'rest_framework_simplejwt',
+    'glam_ai'
 
 ]
 #
